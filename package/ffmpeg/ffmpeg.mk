@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-FFMPEG_VERSION = 6.1.2
+FFMPEG_VERSION = 4.4.4
 FFMPEG_SOURCE = ffmpeg-$(FFMPEG_VERSION).tar.xz
 FFMPEG_SITE = https://ffmpeg.org/releases
 FFMPEG_INSTALL_STAGING = YES
@@ -32,6 +32,10 @@ FFMPEG_CONF_OPTS = \
 	--disable-gray \
 	--enable-swscale-alpha \
 	--disable-small \
+	--enable-dct \
+	--enable-fft \
+	--enable-mdct \
+	--enable-rdft \
 	--disable-crystalhd \
 	--disable-dxva2 \
 	--enable-runtime-cpudetect \
@@ -82,21 +86,17 @@ else
 FFMPEG_CONF_OPTS += --disable-ffplay
 endif
 
-ifeq ($(BR2_PACKAGE_JACK1),y)
-FFMPEG_CONF_OPTS += --enable-libjack
-FFMPEG_DEPENDENCIES += jack1
-else ifeq ($(BR2_PACKAGE_JACK2),y)
-FFMPEG_CONF_OPTS += --enable-libjack
-FFMPEG_DEPENDENCIES += jack2
-else
-FFMPEG_CONF_OPTS += --disable-libjack
-endif
-
 ifeq ($(BR2_PACKAGE_LIBV4L),y)
 FFMPEG_DEPENDENCIES += libv4l
 FFMPEG_CONF_OPTS += --enable-libv4l2
 else
 FFMPEG_CONF_OPTS += --disable-libv4l2
+endif
+
+ifeq ($(BR2_PACKAGE_FFMPEG_AVRESAMPLE),y)
+FFMPEG_CONF_OPTS += --enable-avresample
+else
+FFMPEG_CONF_OPTS += --disable-avresample
 endif
 
 ifeq ($(BR2_PACKAGE_FFMPEG_FFPROBE),y)
@@ -331,14 +331,11 @@ else
 FFMPEG_CONF_OPTS += --disable-libbluray
 endif
 
-ifeq ($(BR2_PACKAGE_LIBVPL),y)
-FFMPEG_CONF_OPTS += --enable-libvpl --disable-libmfx
-FFMPEG_DEPENDENCIES += libvpl
-else ifeq ($(BR2_PACKAGE_INTEL_MEDIASDK),y)
-FFMPEG_CONF_OPTS += --disable-libvpl --enable-libmfx
+ifeq ($(BR2_PACKAGE_INTEL_MEDIASDK),y)
+FFMPEG_CONF_OPTS += --enable-libmfx
 FFMPEG_DEPENDENCIES += intel-mediasdk
 else
-FFMPEG_CONF_OPTS += --disable-libvpl --disable-libmfx
+FFMPEG_CONF_OPTS += --disable-libmfx
 endif
 
 ifeq ($(BR2_PACKAGE_RTMPDUMP),y)
