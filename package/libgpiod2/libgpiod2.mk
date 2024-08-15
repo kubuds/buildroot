@@ -14,7 +14,6 @@ LIBGPIOD2_LICENSE_FILES = COPYING
 LIBGPIOD2_INSTALL_STAGING = YES
 LIBGPIOD2_DEPENDENCIES = host-pkgconf
 LIBGPIOD2_CONF_OPTS = \
-	--disable-bindings-python \
 	--disable-examples \
 	--disable-tests
 
@@ -28,6 +27,17 @@ ifeq ($(BR2_INSTALL_LIBSTDCPP),y)
 LIBGPIOD2_CONF_OPTS += --enable-bindings-cxx
 else
 LIBGPIOD2_CONF_OPTS += --disable-bindings-cxx
+endif
+
+ifeq ($(BR2_PACKAGE_PYTHON3),y)
+LIBGPIOD2_CONF_OPTS += --enable-bindings-python
+LIBGPIOD2_DEPENDENCIES += python3 host-python-setuptools
+LIBGPIOD2_CONF_ENV += \
+	PYTHON=$(HOST_DIR)/bin/python3 \
+	PYTHON_CPPFLAGS="`$(STAGING_DIR)/usr/bin/python3-config --includes`" \
+	PYTHON_LIBS="`$(STAGING_DIR)/usr/bin/python3-config --ldflags`"
+else
+LIBGPIOD2_CONF_OPTS += --disable-bindings-python
 endif
 
 $(eval $(autotools-package))

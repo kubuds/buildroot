@@ -1,0 +1,12 @@
+diff --git a/bindings/python/Makefile.in b/bindings/python/Makefile.in
+index 767830a..46f5bae 100644
+--- a/bindings/python/Makefile.in
++++ b/bindings/python/Makefile.in
+@@ -667,6 +667,7 @@ uninstall-am:
+ 
+ .PRECIOUS: Makefile
+ 
++export CC CXXCPP LD PKG_CONFIG
+ 
+ all-local:
+ 	GPIOD_WITH_TESTS=$(BUILD_TESTS) \
